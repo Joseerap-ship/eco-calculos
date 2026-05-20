@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoCálculos — Econometría interactiva</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="js/math.js" defer></script>
+  <script src="js/data-table.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <div class="bg-glow bg-glow--green"></div>
+  <div class="bg-glow bg-glow--pink"></div>
+  <div class="bg-glow bg-glow--blue"></div>
+
+  <header class="header">
+    <a href="#inicio" class="logo">
+      <span class="logo__eco">Eco</span><span class="logo__calc">Cálculos</span>
+    </a>
+    <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav" id="nav">
+      <a href="#regresion" class="nav__link" data-neon="green">Regresión Lineal</a>
+      <a href="#minimos" class="nav__link" data-neon="pink">Mínimos Cuadrados</a>
+      <a href="#series" class="nav__link" data-neon="blue">Series de Tiempo</a>
+      <a href="#econometricos" class="nav__link" data-neon="green">Modelos Econométricos</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="inicio" class="hero">
+      <p class="hero__tag">Econometría · Estadística · Análisis de datos</p>
+      <h1 class="hero__title">Aprende, practica y <span class="text-gradient">calcula</span></h1>
+      <p class="hero__desc">
+        Plataforma interactiva en español para regresión lineal, mínimos cuadrados ordinarios,
+        series de tiempo y modelos econométricos. Ingresa tus datos y obtén resultados al instante.
+      </p>
+      <div class="hero__actions">
+        <a href="#regresion" class="btn btn--green">Empezar con regresión</a>
+        <a href="#econometricos" class="btn btn--outline">Modelo múltiple</a>
+      </div>
+      <div class="hero__cards">
+        <article class="mini-card" data-neon="green">
+          <h3>Regresión</h3>
+          <p>Relación lineal entre variables con R² y gráfico de ajuste.</p>
+        </article>
+        <article class="mini-card" data-neon="pink">
+          <h3>Mínimos cuadrados</h3>
+          <p>Estimación OLS, residuos y ecuaciones normales.</p>
+        </article>
+        <article class="mini-card" data-neon="blue">
+          <h3>Series de tiempo</h3>
+          <p>Media móvil, tendencia lineal y suavizado exponencial.</p>
+        </article>
+        <article class="mini-card" data-neon="green">
+          <h3>Econometría</h3>
+          <p>Regresión múltiple con varias variables explicativas.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- REGRESIÓN LINEAL -->
+    <section id="regresion" class="topic" data-accent="green">
+      <div class="topic__header">
+        <span class="topic__badge">Tema 1</span>
+        <h2>Regresión Lineal</h2>
+        <p class="topic__intro">Modela la dependencia lineal entre una variable respuesta <em>Y</em> y una explicativa <em>X</em>.</p>
+      </div>
+
+      <div class="grid-2">
+        <article class="card theory">
+          <h3>Teoría</h3>
+          <p>El modelo de regresión lineal simple postula:</p>
+          <p class="formula">Y<sub>i</sub> = β₀ + β₁X<sub>i</sub> + ε<sub>i</sub></p>
+          <ul>
+            <li><strong>β₀</strong> — intercepto (valor esperado de Y cuando X = 0).</li>
+            <li><strong>β₁</strong> — pendiente (cambio en Y por unidad de X).</li>
+            <li><strong>ε<sub>i</sub></strong> — error aleatorio con media cero.</li>
+          </ul>
+          <p>Los estimadores de mínimos cuadrados son:</p>
+          <p class="formula">β̂₁ = Σ(x<sub>i</sub> − x̄)(y<sub>i</sub> − ȳ) / Σ(x<sub>i</sub> − x̄)²</p>
+          <p class="formula">β̂₀ = ȳ − β̂₁x̄</p>
+          <p>El coeficiente de determinación <strong>R²</strong> mide la proporción de varianza de Y explicada por X (entre 0 y 1).</p>
+        </article>
+        <article class="card example">
+          <h3>Ejemplo</h3>
+          <p>Ingreso mensual (X, miles €) vs gasto en ocio (Y, miles €):</p>
+          <table class="data-table">
+            <thead><tr><th>X</th><th>Y</th></tr></thead>
+            <tbody>
+              <tr><td>2</td><td>1.2</td></tr>
+              <tr><td>3</td><td>1.8</td></tr>
+              <tr><td>4</td><td>2.1</td></tr>
+              <tr><td>5</td><td>2.9</td></tr>
+              <tr><td>6</td><td>3.4</td></tr>
+            </tbody>
+          </table>
+          <p>Resultado aproximado: <code>Ŷ = 0.15 + 0.55·X</code>, R² ≈ 0.98. A mayor ingreso, mayor gasto en ocio.</p>
+          <button type="button" class="btn btn--sm btn--green load-example" data-table="reg" data-example="regresion">Cargar ejemplo</button>
+        </article>
+      </div>
+
+      <article class="card calculator">
+        <h3>Calculadora — Regresión lineal simple</h3>
+        <p class="hint">Completa <strong>X</strong> e <strong>Y</strong>. Al pegar (Ctrl+V), los datos empiezan en la celda seleccionada. <strong>Limpiar tabla</strong> vacía y deja 3 filas.</p>
+        <div class="calc-row">
+          <span class="calc-label">Datos (X, Y)</span>
+          <div id="reg-grid"></div>
+        </div>
+        <button type="button" class="btn btn--green" id="btn-regresion">Calcular regresión</button>
+        <div id="reg-result" class="result" hidden></div>
+        <div class="chart-wrap"><canvas id="chart-regresion"></canvas></div>
+      </article>
+    </section>
+
+    <!-- MÍNIMOS CUADRADOS -->
+    <section id="minimos" class="topic" data-accent="pink">
+      <div class="topic__header">
+        <span class="topic__badge">Tema 2</span>
+        <h2>Mínimos Cuadrados</h2>
+        <p class="topic__intro">Método OLS: minimiza la suma de cuadrados de los residuos para obtener los parámetros óptimos.</p>
+      </div>
+
+      <div class="grid-2">
+        <article class="card theory">
+          <h3>Teoría</h3>
+          <p>El objetivo es minimizar:</p>
+          <p class="formula">S(β) = Σ<sub>i=1</sub><sup>n</sup> (Y<sub>i</sub> − Ŷ<sub>i</sub>)² = Σ e<sub>i</sub>²</p>
+          <p>Derivando respecto a β₀ y β₁ e igualando a cero (ecuaciones normales):</p>
+          <p class="formula">n·β₀ + β₁·ΣX<sub>i</sub> = ΣY<sub>i</sub></p>
+          <p class="formula">β₀·ΣX<sub>i</sub> + β₁·ΣX<sub>i</sub>² = ΣX<sub>i</sub>Y<sub>i</sub></p>
+          <p>En forma matricial (regresión múltiple): <strong>β̂ = (X′X)⁻¹X′Y</strong>. Los residuos e<sub>i</sub> = Y<sub>i</sub> − Ŷ<sub>i</sub> deben tener media cercana a cero si el modelo es adecuado.</p>
+        </article>
+        <article class="card example">
+          <h3>Ejemplo</h3>
+          <p>Horas de estudio (X) vs nota del examen (Y):</p>
+          <table class="data-table">
+            <thead><tr><th>X</th><th>Y</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>4</td></tr>
+              <tr><td>2</td><td>5</td></tr>
+              <tr><td>3</td><td>5.5</td></tr>
+              <tr><td>4</td><td>7</td></tr>
+              <tr><td>5</td><td>8</td></tr>
+            </tbody>
+          </table>
+          <p>La recta OLS ajusta los puntos minimizando Σe². Aquí SSE (suma de residuos al cuadrado) será pequeña si el ajuste es bueno.</p>
+          <button type="button" class="btn btn--sm btn--pink load-example" data-table="mc" data-example="minimos">Cargar ejemplo</button>
+        </article>
+      </div>
+
+      <article class="card calculator">
+        <h3>Calculadora — OLS detallado</h3>
+        <p class="hint">Tabla <strong>X, Y</strong>; el pegado respeta la columna activa. Verás ecuaciones normales, SSE, MSE y residuos.</p>
+        <div class="calc-row">
+          <span class="calc-label">Datos (X, Y)</span>
+          <div id="mc-grid"></div>
+        </div>
+        <button type="button" class="btn btn--pink" id="btn-minimos">Resolver por mínimos cuadrados</button>
+        <div id="mc-result" class="result" hidden></div>
+        <div class="chart-wrap"><canvas id="chart-minimos"></canvas></div>
+      </article>
+    </section>
+
+    <!-- SERIES DE TIEMPO -->
+    <section id="series" class="topic" data-accent="blue">
+      <div class="topic__header">
+        <span class="topic__badge">Tema 3</span>
+        <h2>Series de Tiempo</h2>
+        <p class="topic__intro">Analiza observaciones ordenadas en el tiempo: tendencia, suavizado y pronóstico simple.</p>
+      </div>
+
+      <div class="grid-2">
+        <article class="card theory">
+          <h3>Teoría</h3>
+          <p>Una serie {Y<sub>t</sub>} puede descomponerse en:</p>
+          <p class="formula">Y<sub>t</sub> = Tendencia + Estacionalidad + Ruido</p>
+          <ul>
+            <li><strong>Media móvil (MA)</strong> — promedio de las últimas <em>k</em> observaciones; suaviza fluctuaciones.</li>
+            <li><strong>Tendencia lineal</strong> — regresión de Y sobre t (tiempo).</li>
+            <li><strong>Suavizado exponencial (SES)</strong> — Ŷ<sub>t+1</sub> = α·Y<sub>t</sub> + (1−α)·Ŷ<sub>t</sub>, con α ∈ (0,1).</li>
+          </ul>
+          <p>Para pronosticar un período adelante se usa el último valor suavizado o la extrapolación de la tendencia.</p>
+        </article>
+        <article class="card example">
+          <h3>Ejemplo</h3>
+          <p>Ventas trimestrales (unidades):</p>
+          <table class="data-table">
+            <thead><tr><th>t</th><th>Y</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>120</td></tr>
+              <tr><td>2</td><td>135</td></tr>
+              <tr><td>3</td><td>128</td></tr>
+              <tr><td>4</td><td>142</td></tr>
+              <tr><td>5</td><td>150</td></tr>
+              <tr><td>6</td><td>158</td></tr>
+            </tbody>
+          </table>
+          <p>Con ventana MA=3 y α=0.3 en SES se obtiene una trayectoria más suave y un pronóstico para t=7.</p>
+          <button type="button" class="btn btn--sm btn--blue load-example" data-table="st" data-example="series">Cargar ejemplo</button>
+        </article>
+      </div>
+
+      <article class="card calculator">
+        <h3>Calculadora — Series de tiempo</h3>
+        <p class="hint">Columnas <strong>t</strong> e <strong>Y</strong>. Pega en la celda donde quieras empezar (p. ej. solo en <strong>Y</strong>).</p>
+        <div class="calc-row">
+          <span class="calc-label">Serie temporal</span>
+          <div id="st-grid"></div>
+        </div>
+        <div class="calc-row calc-row--inline">
+          <div>
+            <label for="st-window">Ventana media móvil</label>
+            <input type="number" id="st-window" min="2" max="12" value="3" />
+          </div>
+          <div>
+            <label for="st-alpha">α (suavizado exponencial)</label>
+            <input type="number" id="st-alpha" min="0.05" max="0.95" step="0.05" value="0.3" />
+          </div>
+        </div>
+        <button type="button" class="btn btn--blue" id="btn-series">Analizar serie</button>
+        <div id="st-result" class="result" hidden></div>
+        <div class="chart-wrap"><canvas id="chart-series"></canvas></div>
+      </article>
+    </section>
+
+    <!-- MODELOS ECONOMÉTRICOS -->
+    <section id="econometricos" class="topic" data-accent="green">
+      <div class="topic__header">
+        <span class="topic__badge">Tema 4</span>
+        <h2>Modelos Econométricos</h2>
+        <p class="topic__intro">Regresión múltiple: varias variables explicativas para modelar fenómenos económicos.</p>
+      </div>
+
+      <div class="grid-2">
+        <article class="card theory">
+          <h3>Teoría</h3>
+          <p>El modelo lineal múltiple:</p>
+          <p class="formula">Y = β₀ + β₁X₁ + β₂X₂ + … + β<sub>k</sub>X<sub>k</sub> + ε</p>
+          <p>En matriz: <strong>Y = Xβ + ε</strong>, con estimador <strong>β̂ = (X′X)⁻¹X′Y</strong> bajo los supuestos de Gauss-Markov (linealidad, exogeneidad, homocedasticidad, no autocorrelación).</p>
+          <p><strong>R² ajustado</strong> penaliza el añadir variables irrelevantes:</p>
+          <p class="formula">R²<sub>adj</sub> = 1 − [(1−R²)(n−1)/(n−k−1)]</p>
+          <p>Se usa en consumo (ingreso, precios), producción (capital, trabajo) y demanda.</p>
+        </article>
+        <article class="card example">
+          <h3>Ejemplo</h3>
+          <p>Consumo (Y), ingreso (X₁) y tasa de interés (X₂):</p>
+          <table class="data-table data-table--wide">
+            <thead><tr><th>Y</th><th>X₁</th><th>X₂</th></tr></thead>
+            <tbody>
+              <tr><td>50</td><td>30</td><td>2</td></tr>
+              <tr><td>55</td><td>32</td><td>2.1</td></tr>
+              <tr><td>58</td><td>35</td><td>1.9</td></tr>
+              <tr><td>62</td><td>38</td><td>2.2</td></tr>
+              <tr><td>65</td><td>40</td><td>2.0</td></tr>
+            </tbody>
+          </table>
+          <p>Cada fila: <code>Y, X1, X2</code>. El intercepto se estima automáticamente.</p>
+          <button type="button" class="btn btn--sm btn--green load-example" data-table="eco" data-example="econometricos">Cargar ejemplo</button>
+        </article>
+      </div>
+
+      <article class="card calculator">
+        <h3>Calculadora — Regresión múltiple</h3>
+        <p class="hint">Columnas <strong>Y, X₁, X₂…</strong> Usa <strong>+ Variable X</strong> o pega desde la columna elegida. <strong>Limpiar tabla</strong> reinicia los datos.</p>
+        <div class="calc-row">
+          <span class="calc-label">Datos (Y, X₁, X₂, …)</span>
+          <div id="eco-grid"></div>
+        </div>
+        <button type="button" class="btn btn--green" id="btn-econometricos">Estimar modelo</button>
+        <div id="eco-result" class="result" hidden></div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p><strong>EcoCálculos</strong> — Herramienta educativa de econometría. Los resultados son orientativos; valida siempre con tu curso o software estadístico.</p>
+    <p class="footer__copy">© 2026 EcoCálculos</p>
+  </footer>
+</body>
+</html>
