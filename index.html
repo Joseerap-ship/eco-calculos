@@ -26,17 +26,22 @@
       <span></span><span></span><span></span>
     </button>
     <nav class="nav" id="nav">
-      <a href="#regresion" class="nav__link" data-neon="green">Regresión Lineal</a>
-      <a href="#minimos" class="nav__link" data-neon="pink">Mínimos Cuadrados</a>
-      <a href="#series" class="nav__link" data-neon="blue">Series de Tiempo</a>
-      <a href="#econometricos" class="nav__link" data-neon="green">Modelos Econométricos</a>
+      <div class="nav__dropdown">
+        <button class="nav__link nav__dropdown-btn">Temas ▾</button>
+        <div class="nav__dropdown-menu">
+          <a href="#regresion" class="nav__dropdown-item">Regresión Lineal</a>
+          <a href="#minimos" class="nav__dropdown-item">Mínimos Cuadrados</a>
+          <a href="#series" class="nav__dropdown-item">Series de Tiempo</a>
+          <a href="#econometricos" class="nav__dropdown-item">Modelos Econométricos</a>
+        </div>
+      </div>
     </nav>
   </header>
 
   <main>
     <section id="inicio" class="hero">
       <p class="hero__tag">Econometría · Estadística · Análisis de datos</p>
-      <h1 class="hero__title">Aprende, practica y <span class="text-gradient">calcula</span></h1>
+      <h1 class="hero__title"><span class="text-gradient">EcoCálculos</span></h1>
       <p class="hero__desc">
         Plataforma interactiva en español para regresión lineal, mínimos cuadrados ordinarios,
         series de tiempo y modelos econométricos. Ingresa tus datos y obtén resultados al instante.
