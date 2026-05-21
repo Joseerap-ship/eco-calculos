@@ -4,8 +4,7 @@
 const EcoMath = (() => {
   function parsePairs(text) {
     const lines = text.trim().split(/\n+/).filter(Boolean);
-    const xs = [];
-    const ys = [];
+    const xs = [], ys = [];
     for (const line of lines) {
       const parts = line.split(/[,;\s]+/).map(Number).filter((n) => !Number.isNaN(n));
       if (parts.length < 2) continue;
@@ -17,12 +16,9 @@ const EcoMath = (() => {
   }
 
   function parseSeries(text) {
-    const vals = text
-      .trim()
-      .split(/\n+/)
+    const vals = text.trim().split(/\n+/)
       .flatMap((line) => line.split(/[,;\s]+/))
-      .map(Number)
-      .filter((n) => !Number.isNaN(n));
+      .map(Number).filter((n) => !Number.isNaN(n));
     if (vals.length < 3) throw new Error("La serie debe tener al menos 3 observaciones.");
     return vals;
   }
@@ -37,14 +33,11 @@ const EcoMath = (() => {
     }
     if (rows.length < 3) throw new Error("Se necesitan al menos 3 filas con Y y al menos una X.");
     const cols = rows[0].length;
-    if (!rows.every((r) => r.length === cols)) {
-      throw new Error("Todas las filas deben tener el mismo número de columnas (Y, X1, X2, …).");
-    }
+    if (!rows.every((r) => r.length === cols))
+      throw new Error("Todas las filas deben tener el mismo número de columnas.");
     const y = rows.map((r) => r[0]);
     const xCols = [];
-    for (let j = 1; j < cols; j++) {
-      xCols.push(rows.map((r) => r[j]));
-    }
+    for (let j = 1; j < cols; j++) xCols.push(rows.map((r) => r[j]));
     return { y, xCols, n: rows.length, k: xCols.length };
   }
 
@@ -56,17 +49,14 @@ const EcoMath = (() => {
     const n = x.length;
     const xBar = mean(x);
     const yBar = mean(y);
-    let sxy = 0;
-    let sxx = 0;
-    let syy = 0;
+    let sxy = 0, sxx = 0, syy = 0;
     for (let i = 0; i < n; i++) {
-      const dx = x[i] - xBar;
-      const dy = y[i] - yBar;
+      const dx = x[i] - xBar, dy = y[i] - yBar;
       sxy += dx * dy;
       sxx += dx * dx;
       syy += dy * dy;
     }
-    if (sxx === 0) throw new Error("La variable X no tiene variación (todos los X son iguales).");
+    if (sxx === 0) throw new Error("La variable X no tiene variación.");
     const b1 = sxy / sxx;
     const b0 = yBar - b1 * xBar;
     const fitted = x.map((xi) => b0 + b1 * xi);
@@ -88,17 +78,73 @@ const EcoMath = (() => {
     return { n, sumX, sumY, sumXX, sumXY };
   }
 
+  // Tabla t de Student (aproximación) para intervalos y pruebas
+  function tCritical(df, alpha2tail) {
+    // Valores comunes precalculados
+    const table = {
+      0.10: [6.314,2.920,2.353,2.132,2.015,1.943,1.895,1.860,1.833,1.812,1.796,1.782,1.771,1.761,1.753,1.746,1.740,1.734,1.729,1.725,1.721,1.717,1.714,1.711,1.708,1.706,1.703,1.701,1.699,1.697],
+      0.05: [12.706,4.303,3.182,2.776,2.571,2.447,2.365,2.306,2.262,2.228,2.201,2.179,2.160,2.145,2.131,2.120,2.110,2.101,2.093,2.086,2.080,2.074,2.069,2.064,2.060,2.056,2.052,2.048,2.045,2.042],
+      0.01: [63.657,9.925,5.841,4.604,4.032,3.707,3.499,3.355,3.250,3.169,3.106,3.055,3.012,2.977,2.947,2.921,2.898,2.878,2.861,2.845,2.831,2.819,2.807,2.797,2.787,2.779,2.771,2.763,2.756,2.750],
+    };
+    const row = table[alpha2tail];
+    if (!row) return 1.96;
+    if (df <= 0) return row[0];
+    if (df <= 30) return row[df - 1];
+    if (df <= 40) return alpha2tail === 0.05 ? 2.021 : alpha2tail === 0.01 ? 2.704 : 1.684;
+    if (df <= 60) return alpha2tail === 0.05 ? 2.000 : alpha2tail === 0.01 ? 2.660 : 1.671;
+    if (df <= 120) return alpha2tail === 0.05 ? 1.980 : alpha2tail === 0.01 ? 2.617 : 1.658;
+    return alpha2tail === 0.05 ? 1.960 : alpha2tail === 0.01 ? 2.576 : 1.645;
+  }
+
+  function confidenceIntervals(r, confidenceLevel) {
+    const alpha = 1 - confidenceLevel / 100;
+    const df = r.n - 2;
+    const tc = tCritical(df, alpha);
+    const sigma = Math.sqrt(r.mse);
+    const sqrtSxx = Math.sqrt(r.sxx);
+
+    // IC para β₁
+    const seB1 = sigma / sqrtSxx;
+    const b1Low = r.b1 - tc * seB1;
+    const b1High = r.b1 + tc * seB1;
+
+    // IC para β₀
+    const seB0 = sigma * Math.sqrt(1/r.n + (r.xBar**2)/r.sxx);
+    const b0Low = r.b0 - tc * seB0;
+    const b0High = r.b0 + tc * seB0;
+
+    return { tc, df, alpha, sigma, seB1, seB0, b1Low, b1High, b0Low, b0High, confidenceLevel };
+  }
+
+  function hypothesisTest(r, confidenceLevel) {
+    const alpha = 1 - confidenceLevel / 100;
+    const df = r.n - 2;
+    const tc = tCritical(df, alpha);
+    const sigma = Math.sqrt(r.mse);
+    const sqrtSxx = Math.sqrt(r.sxx);
+
+    // Estadístico t para β₁
+    const seB1 = sigma / sqrtSxx;
+    const tStatB1 = r.b1 / seB1;
+
+    // Estadístico t para β₀
+    const seB0 = sigma * Math.sqrt(1/r.n + (r.xBar**2)/r.sxx);
+    const tStatB0 = r.b0 / seB0;
+
+    const rejectB1 = Math.abs(tStatB1) > tc;
+    const rejectB0 = Math.abs(tStatB0) > tc;
+
+    return { tStatB1, tStatB0, tc, df, rejectB1, rejectB0, alpha };
+  }
+
   function movingAverage(series, window) {
     const w = Math.max(2, Math.min(window, series.length));
     const ma = [];
     for (let i = 0; i < series.length; i++) {
-      if (i < w - 1) {
-        ma.push(null);
-      } else {
-        let sum = 0;
-        for (let j = i - w + 1; j <= i; j++) sum += series[j];
-        ma.push(sum / w);
-      }
+      if (i < w - 1) { ma.push(null); continue; }
+      let sum = 0;
+      for (let j = i - w + 1; j <= i; j++) sum += series[j];
+      ma.push(sum / w);
     }
     return ma;
   }
@@ -106,9 +152,8 @@ const EcoMath = (() => {
   function exponentialSmoothing(series, alpha) {
     const a = Math.max(0.05, Math.min(0.95, alpha));
     const smoothed = [series[0]];
-    for (let t = 1; t < series.length; t++) {
+    for (let t = 1; t < series.length; t++)
       smoothed.push(a * series[t] + (1 - a) * smoothed[t - 1]);
-    }
     const forecast = a * series[series.length - 1] + (1 - a) * smoothed[smoothed.length - 1];
     return { smoothed, forecast };
   }
@@ -131,12 +176,10 @@ const EcoMath = (() => {
     });
     for (let col = 0; col < n; col++) {
       let pivot = col;
-      for (let row = col + 1; row < n; row++) {
+      for (let row = col + 1; row < n; row++)
         if (Math.abs(aug[row][col]) > Math.abs(aug[pivot][col])) pivot = row;
-      }
-      if (Math.abs(aug[pivot][col]) < 1e-12) {
-        throw new Error("La matriz X′X es singular; revisa multicolinealidad o datos duplicados.");
-      }
+      if (Math.abs(aug[pivot][col]) < 1e-12)
+        throw new Error("La matriz X′X es singular; revisa multicolinealidad.");
       [aug[col], aug[pivot]] = [aug[pivot], aug[col]];
       const div = aug[col][col];
       for (let j = 0; j < 2 * n; j++) aug[col][j] /= div;
@@ -150,15 +193,11 @@ const EcoMath = (() => {
   }
 
   function multiplyMatrices(a, b) {
-    const rows = a.length;
-    const cols = b[0].length;
-    const inner = b.length;
+    const rows = a.length, cols = b[0].length, inner = b.length;
     const out = Array.from({ length: rows }, () => new Array(cols).fill(0));
-    for (let i = 0; i < rows; i++) {
-      for (let j = 0; j < cols; j++) {
+    for (let i = 0; i < rows; i++)
+      for (let j = 0; j < cols; j++)
         for (let k = 0; k < inner; k++) out[i][j] += a[i][k] * b[k][j];
-      }
-    }
     return out;
   }
 
@@ -167,8 +206,7 @@ const EcoMath = (() => {
   }
 
   function multipleRegression(y, xCols) {
-    const n = y.length;
-    const k = xCols.length;
+    const n = y.length, k = xCols.length;
     const X = Array.from({ length: n }, (_, i) => [1, ...xCols.map((col) => col[i])]);
     const Y = y.map((v) => [v]);
     const Xt = transpose(X);
@@ -196,15 +234,10 @@ const EcoMath = (() => {
   }
 
   return {
-    parsePairs,
-    parseSeries,
-    parseMultiple,
-    simpleRegression,
-    normalEquations,
-    movingAverage,
-    exponentialSmoothing,
-    trendOnTime,
-    multipleRegression,
-    fmt,
+    parsePairs, parseSeries, parseMultiple,
+    simpleRegression, normalEquations,
+    confidenceIntervals, hypothesisTest,
+    movingAverage, exponentialSmoothing, trendOnTime,
+    multipleRegression, fmt,
   };
 })();

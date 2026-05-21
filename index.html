@@ -110,65 +110,28 @@
         </article>
       </div>
 
+
       <article class="card calculator">
-        <h3>Calculadora — Regresión lineal simple</h3>
+        <h3>Calculadora — Regresión Lineal & Mínimos Cuadrados</h3>
         <div class="calc-row">
           <span class="calc-label">Datos (X, Y)</span>
           <div id="reg-grid"></div>
         </div>
-        <button type="button" class="btn btn--green" id="btn-regresion">Calcular regresión</button>
+        <div class="calc-row--inline" style="margin-bottom:1rem; display:flex; align-items:center; gap:1rem;">
+          <label for="reg-confidence" style="color:var(--gold); font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em;">Nivel de confianza</label>
+          <select id="reg-confidence" style="background:rgba(0,0,0,0.35); border:1px solid rgba(201,168,76,0.3); border-radius:8px; color:var(--gold); font-family:var(--mono); font-size:0.88rem; padding:0.5rem 1rem;">
+            <option value="90">90%</option>
+            <option value="95" selected>95%</option>
+            <option value="99">99%</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn--green" id="btn-regresion">Calcular todo</button>
         <div id="reg-result" class="result" hidden></div>
         <div class="chart-wrap"><canvas id="chart-regresion"></canvas></div>
       </article>
     </section>
 
-    <!-- MÍNIMOS CUADRADOS -->
-    <section id="minimos" class="topic" data-accent="pink">
-      <div class="topic__header">
-        <span class="topic__badge">Tema 2</span>
-        <h2>Mínimos Cuadrados</h2>
-        <p class="topic__intro">Método OLS: minimiza la suma de cuadrados de los residuos para obtener los parámetros óptimos.</p>
-      </div>
-
-      <div class="grid-2">
-        <article class="card theory">
-          <h3>Teoría</h3>
-          <p>El objetivo es minimizar:</p>
-          <p class="formula">S(β) = Σ<sub>i=1</sub><sup>n</sup> (Y<sub>i</sub> − Ŷ<sub>i</sub>)² = Σ e<sub>i</sub>²</p>
-          <p>Derivando respecto a β₀ y β₁ e igualando a cero (ecuaciones normales):</p>
-          <p class="formula">n·β₀ + β₁·ΣX<sub>i</sub> = ΣY<sub>i</sub></p>
-          <p class="formula">β₀·ΣX<sub>i</sub> + β₁·ΣX<sub>i</sub>² = ΣX<sub>i</sub>Y<sub>i</sub></p>
-          <p>En forma matricial (regresión múltiple): <strong>β̂ = (X′X)⁻¹X′Y</strong>. Los residuos e<sub>i</sub> = Y<sub>i</sub> − Ŷ<sub>i</sub> deben tener media cercana a cero si el modelo es adecuado.</p>
-        </article>
-        <article class="card example">
-          <h3>Ejemplo</h3>
-          <p>Horas de estudio (X) vs nota del examen (Y):</p>
-          <table class="data-table">
-            <thead><tr><th>X</th><th>Y</th></tr></thead>
-            <tbody>
-              <tr><td>1</td><td>4</td></tr>
-              <tr><td>2</td><td>5</td></tr>
-              <tr><td>3</td><td>5.5</td></tr>
-              <tr><td>4</td><td>7</td></tr>
-              <tr><td>5</td><td>8</td></tr>
-            </tbody>
-          </table>
-          <p>La recta OLS ajusta los puntos minimizando Σe². Aquí SSE (suma de residuos al cuadrado) será pequeña si el ajuste es bueno.</p>
-          <button type="button" class="btn btn--sm btn--pink load-example" data-table="mc" data-example="minimos">Cargar ejemplo</button>
-        </article>
-      </div>
-
-      <article class="card calculator">
-        <h3>Calculadora — OLS detallado</h3>
-        <div class="calc-row">
-          <span class="calc-label">Datos (X, Y)</span>
-          <div id="mc-grid"></div>
-        </div>
-        <button type="button" class="btn btn--pink" id="btn-minimos">Resolver por mínimos cuadrados</button>
-        <div id="mc-result" class="result" hidden></div>
-        <div class="chart-wrap"><canvas id="chart-minimos"></canvas></div>
-      </article>
-    </section>
+    
 
     <!-- SERIES DE TIEMPO -->
     <section id="series" class="topic" data-accent="blue">
