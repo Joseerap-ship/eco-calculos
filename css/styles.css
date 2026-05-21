@@ -777,21 +777,10 @@ input[type="number"]:focus {
   font-size: 0.8rem;
   opacity: 0.6;
 }
-/* Hero imagen de fondo */
 .hero {
-  background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1400&q=80') center/cover no-repeat;
-  border-radius: 16px;
   position: relative;
-  padding: 5rem 2rem;
+  padding: 3rem 0 4rem;
 }
-.hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(8, 12, 26, 0.75);
-  border-radius: 16px;
-}
-.hero > * { position: relative; z-index: 1; }
 
 /* Dropdown menú */
 .nav__dropdown { position: relative; }
