@@ -97,45 +97,39 @@ const EcoMath = (() => {
   }
 
   function confidenceIntervals(r, confidenceLevel) {
-    const alpha = 1 - confidenceLevel / 100;
+    const cl = Number(confidenceLevel);
+    const alpha = 1 - cl / 100;
+    const alpha2tail = alpha;
     const df = r.n - 2;
-    const tc = tCritical(df, alpha);
+    const tc = tCritical(df, alpha2tail);
     const sigma = Math.sqrt(r.mse);
     const sqrtSxx = Math.sqrt(r.sxx);
-
-    // IC para β₁
     const seB1 = sigma / sqrtSxx;
     const b1Low = r.b1 - tc * seB1;
     const b1High = r.b1 + tc * seB1;
-
-    // IC para β₀
     const seB0 = sigma * Math.sqrt(1/r.n + (r.xBar**2)/r.sxx);
     const b0Low = r.b0 - tc * seB0;
     const b0High = r.b0 + tc * seB0;
-
-    return { tc, df, alpha, sigma, seB1, seB0, b1Low, b1High, b0Low, b0High, confidenceLevel };
+    return { tc, df, alpha, sigma, seB1, seB0, b1Low, b1High, b0Low, b0High, confidenceLevel: cl };
   }
 
   function hypothesisTest(r, confidenceLevel) {
-    const alpha = 1 - confidenceLevel / 100;
+    const cl = Number(confidenceLevel);
+    const alpha = 1 - cl / 100;
     const df = r.n - 2;
     const tc = tCritical(df, alpha);
     const sigma = Math.sqrt(r.mse);
     const sqrtSxx = Math.sqrt(r.sxx);
-
-    // Estadístico t para β₁
     const seB1 = sigma / sqrtSxx;
     const tStatB1 = r.b1 / seB1;
-
-    // Estadístico t para β₀
     const seB0 = sigma * Math.sqrt(1/r.n + (r.xBar**2)/r.sxx);
     const tStatB0 = r.b0 / seB0;
-
     const rejectB1 = Math.abs(tStatB1) > tc;
     const rejectB0 = Math.abs(tStatB0) > tc;
-
     return { tStatB1, tStatB0, tc, df, rejectB1, rejectB0, alpha };
   }
+
+ 
 
   function movingAverage(series, window) {
     const w = Math.max(2, Math.min(window, series.length));
