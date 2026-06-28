@@ -11,6 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
   <script src="js/math.js" defer></script>
   <script src="js/data-table.js" defer></script>
+  <script src="js/assistant.js" defer></script>
   <script src="js/app.js" defer></script>
 </head>
 <body>
@@ -140,9 +141,32 @@
     </section>
   </main>
 
+<!-- ASISTENTE IA -->
+<section id="asistente" class="topic" data-accent="green">
+  <div class="topic__header">
+    <span class="topic__badge">IA</span>
+    <h2>Asistente Econométrico</h2>
+    <p class="topic__intro">Sube cualquier archivo y la IA lo analiza automáticamente. Especializado en econometría y Stata.</p>
+  </div>
+  <article class="card" id="assistant-card">
+    <div id="chat-messages" class="chat-messages"></div>
+    <div class="chat-input-area">
+      <label for="file-upload" class="btn btn--outline" style="cursor:pointer;">
+        📎 Subir archivo
+      </label>
+      <input type="file" id="file-upload" accept=".xlsx,.xls,.csv,.pdf,.png,.jpg,.jpeg,.txt" style="display:none" />
+      <span id="file-name" style="font-size:0.82rem; color:var(--gold); margin-left:0.5rem;"></span>
+      <div class="chat-input-row">
+        <input type="text" id="chat-input" placeholder="Escribe tu pregunta o sube un archivo..." />
+        <button class="btn btn--green" id="chat-send">Enviar</button>
+      </div>
+    </div>
+  </article>
+</section>
+
   <footer class="footer">
     <p><strong>EcoCálculos</strong> — Herramienta educativa de econometría. Los resultados son orientativos; valida siempre con tu curso o software estadístico.</p>
-    <p class="footer__copy">© 2026 EcoCálculos</p>
+    <p class="footer__copy">© 2026 desarrolado por EcoCálculos</p>
   </footer>
 </body>
 </html>

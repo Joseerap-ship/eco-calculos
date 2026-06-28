@@ -826,6 +826,99 @@ input[type="number"]:focus {
   color: var(--gold);
   background: var(--gold-dim);
 }
+/* Asistente IA */
+.chat-messages {
+  min-height: 300px;
+  max-height: 450px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+}
+
+.chat-msg {
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  max-width: 85%;
+}
+
+.chat-msg--user {
+  background: rgba(201, 168, 76, 0.12);
+  border: 1px solid rgba(201, 168, 76, 0.25);
+  color: var(--text);
+  align-self: flex-end;
+}
+
+.chat-msg--ai {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  align-self: flex-start;
+}
+
+.chat-msg--system {
+  background: rgba(201, 168, 76, 0.06);
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  color: var(--gold);
+  font-size: 0.82rem;
+  align-self: center;
+  text-align: center;
+}
+
+.chat-input-area {
+  border-top: 1px solid rgba(201, 168, 76, 0.15);
+  padding-top: 1rem;
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.chat-input-row input {
+  flex: 1;
+  font-family: var(--font);
+  font-size: 0.9rem;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 10px;
+  color: var(--text);
+  padding: 0.75rem 1rem;
+}
+
+.chat-input-row input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.15);
+}
+
+.chat-typing {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 0.75rem 1rem;
+}
+
+.chat-typing span {
+  width: 8px;
+  height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: typing 1.2s infinite;
+}
+
+.chat-typing span:nth-child(2) { animation-delay: 0.2s; }
+.chat-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing {
+  0%, 60%, 100% { opacity: 0.2; transform: scale(0.8); }
+  30% { opacity: 1; transform: scale(1); }
+}
 /* Responsive */
 @media (max-width: 768px) {
   .grid-2 { grid-template-columns: 1fr; }
