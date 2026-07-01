@@ -36,43 +36,38 @@
       const loadingId = appendMessage("assistant", "⏳ Analizando...");
   
       try {
-        let content = [];
+        let textContent = "";
   
         if (attachedFile) {
-          const base64 = await toBase64(attachedFile);
           const type = attachedFile.type;
-  
-          if (type === "application/pdf") {
-            content.push({ type: "document", source: { type: "base64", media_type: type, data: base64 } });
-          } else if (type.startsWith("image/")) {
-            content.push({ type: "image", source: { type: "base64", media_type: type, data: base64 } });
+          if (type.startsWith("image/") || type === "application/pdf") {
+            textContent += "[Archivo adjunto: " + attachedFile.name + " — análisis de imágenes no disponible en modo gratuito]\n";
           } else {
             const textData = await attachedFile.text();
-            content.push({ type: "text", text: "Contenido del archivo (" + attachedFile.name + "):\n" + textData.slice(0, 8000) });
+            textContent += "Contenido del archivo (" + attachedFile.name + "):\n" + textData.slice(0, 8000) + "\n";
           }
-  
           attachedFile = null;
           fileNameEl.textContent = "";
           fileInput.value = "";
         }
   
-        if (texto) content.push({ type: "text", text: texto });
+        if (texto) textContent += texto;
   
-        chatHistory.push({ role: "user", content: content });
+        chatHistory.push({ role: "user", content: textContent });
   
         const response = await fetch("/api/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: "claude-sonnet-4-6",
-            max_tokens: 1000,
-            system: "Eres un asistente especializado en econometría y Stata. Ayudas a estudiantes universitarios de Ecuador con regresiones, interpretación de resultados, comandos Stata, series de tiempo y modelos econométricos. Responde siempre en español, de forma clara y didáctica.",
-            messages: chatHistory,
+            messages: [
+              { role: "system", content: "Eres un asistente especializado en econometría y Stata. Ayudas a estudiantes universitarios de Ecuador con regresiones, interpretación de resultados, comandos Stata, series de tiempo y modelos econométricos. Responde siempre en español, de forma clara y didáctica." },
+              ...chatHistory,
+            ],
           }),
         });
   
         const data = await response.json();
-        const reply = data.content?.find(b => b.type === "text")?.text || "Sin respuesta.";
+        const reply = data.choices?.[0]?.message?.content || "Sin respuesta.";
   
         chatHistory.push({ role: "assistant", content: reply });
         updateMessage(loadingId, reply);
